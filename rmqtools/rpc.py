@@ -355,6 +355,9 @@ class RpcClient():
             with the ResponseObject format, so the args and kwargs can be
             passed into a custom response handler.
         """
+        # declare the recipient queue in case the receiver is dead
+        self.channel.queue_declare(queue=queue)
+
         self.response = None
         self.corr_id = str(uuid.uuid4())
 

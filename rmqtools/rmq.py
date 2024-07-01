@@ -23,7 +23,7 @@ from typing import Any, Callable, Dict, List, Literal, Tuple
 import pika
 from pika.exchange_type import ExchangeType
 from rmqtools import (Connection, Publisher, ResponseObject, RpcClient,
-                      RpcServer, Subscriber)
+                      RpcServer, Subscriber, RmqError)
 
 
 class RmqConnection():
@@ -171,6 +171,9 @@ class RmqConnection():
 
         self.timeout_handlers: Dict[str, Callable[[int], None]]
         self.timeout_handlers = {}
+
+        self.error_handlers: Dict[str, Callable[[Exception], None]]
+        self.error_handlers = {}
 
         def handle_exit(sig, frame):
             print('Main thread interrupted by user. '
@@ -634,7 +637,7 @@ class RmqConnection():
         Parameters
         ----------
         command_id : str
-            The identifier of the command this response handler is associated
+            The identifier of the command this timeout handler is associated
             with.
         """
         def decorator(func:Callable[[Any], Any]):
@@ -642,6 +645,28 @@ class RmqConnection():
             def wrapper(*args, **kwargs):
                 return func(*args, **kwargs)
             self.timeout_handlers.update({command_id: func})
+            return wrapper
+        return decorator
+
+    def handle_error(self, command_id:str):
+        """A method decorator to set the error handler of an RPC client.
+
+        This method is not threaded, but it will not cause any IO blocking.
+        All it does is update the ``error_handlers`` attribute with the
+        wrapped function. The wrapped function should have only one argument
+        for the returned error and should not return anything.
+
+        Parameters
+        ----------
+        command_id : str
+            The identifier of the command this error handler is associated
+            with.
+        """
+        def decorator(func:Callable[[Any], Any]):
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                return func(*args, **kwargs)
+            self.error_handlers.update({command_id: func})
             return wrapper
         return decorator
 
@@ -676,17 +701,28 @@ class RmqConnection():
         """
         def default_handler(*a, **kw):
             pass
+
+        def default_error_handler(e:Exception):
+            raise RmqError("An error occurred when sending the command")
+
         command = func(*args, **kwargs)
         response_handler = self.response_handlers.get(
             command_id, default_handler)
         timeout_handler = self.timeout_handlers.get(
             command_id, default_handler)
+        error_handler = self.error_handlers.get(
+            command_id, default_error_handler)
         exchange, _ = self.exchanges.get('command')
         client = RpcClient(exchange)
-        conn = self._get_connection()
-        client.connect(conn)
-        response = client.call_threadsafe(queue, self.stop_event, command,
-                                          timeout=timeout)
+
+        try:
+            conn = self._get_connection()
+            client.connect(conn)
+            response = client.call_threadsafe(queue, self.stop_event, command,
+                                              timeout=timeout)
+        except Exception as e:
+            return error_handler(e)
+
         if not response:
             return timeout_handler(timeout)
         args = response.args

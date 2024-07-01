@@ -11,12 +11,14 @@ Documentation is available in two forms: docstrings provided with the code,
 and an API reference, available on Read the Docs at ...
 """
 
-__version__ = '1.0.0-alpha'
+__version__ = '1.0.0-alpha.3'
 
 import logging
 
 # suppress logging warnings while importing rabbitmq-tools
 logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+from rmqtools.exceptions import RmqError
 
 from rmqtools.connection import ResponseObject
 from rmqtools.connection import Connection
