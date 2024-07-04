@@ -13,6 +13,7 @@ the private methods they employ can be used in a standalone manner. See
 the examples section below.
 """
 
+from datetime import datetime
 import functools
 import signal
 import sys
@@ -395,8 +396,8 @@ class RmqConnection():
         for thread in self.threads:
             thread.join()
 
-    def _publish_status(self, func:Callable[[Any], Any], interval: float,
-                        routing_key: str, *args, **kwargs):
+    def _publish_status(self, func:Callable[[Any], Any], interval:float,
+                        routing_key:str, *args, delay:float=0.0, **kwargs):
         """Publish a status message periodically.
 
         This method is not automatically threaded, but it is thread safe. It
@@ -426,13 +427,20 @@ class RmqConnection():
         publisher.connect(conn)
         props = self.publish_props.get(routing_key)
         while not self.stop_event.is_set():
+            start = datetime.now()
+            time.sleep(min(delay, interval))
+
             data = func(*args, **kwargs) # get status data
             publisher.publish_json(data, routing_key=routing_key,
                                    properties=props)
-            # print(data)
-            time.sleep(interval)
 
-    def publish_status(self, interval: float, routing_key: str):
+            # make sure we don't add extra delay if the data request or publish
+            # command take a few seconds
+            stop = datetime.now()
+            true_delay = (stop - start).total_seconds()
+            time.sleep(max(interval - true_delay, 0))
+
+    def publish_status(self, interval:float, routing_key:str, delay:float=0.0):
         """A method decorator for publishing status messages periodically.
 
         This method is automatically threaded. The function it wraps must
@@ -455,6 +463,7 @@ class RmqConnection():
             thread = threading.Thread(
                 target=self._publish_status,
                 args=(wrapper, interval, routing_key),
+                kwargs={'delay': delay},
             )
             self.threads.append(thread)
             return wrapper
