@@ -11,9 +11,9 @@ Frequently Asked Questions
 
 - How do I report a bug with Rmqtools?
 
-    The `main Rmqtools repository <https://github.com/217690thompson/rmqtools>`_
+    The `main Rmqtools repository <https://github.com/ASTHROS/rmqtools>`_
     is hosted on `GitHub <https://github.com>`_ and we use the
-    `Issue tracker <https://github.com/217690thompson/rmqtools/issues>`_ to
+    `Issue tracker <https://github.com/ASTHROS/rmqtools/issues>`_ to
     handle bug reports.
 
 - How can I contribute to Rmqtools?

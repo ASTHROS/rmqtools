@@ -23,9 +23,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 project = 'rmqtools'
-copyright = '2023, Christian Thompson, Paul Horton'
+copyright = '2026, Christian Thompson, Paul Horton'
 author = 'Christian Thompson, Paul Horton'
-release = '1.0.0-alpha'
+release = '1.0.0'
 version = '.'.join(release.split('.')[0:2])
 
 exclude_patterns = ['_build']

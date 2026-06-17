@@ -73,7 +73,7 @@ class RpcServer():
         self.channel = self.Connection.channel
         self.Connection.exchange_declare(self.exchange_name, self.etype)
         self.exchange = self.Connection.exchanges.get(self.exchange_name)
-        self.channel.queue_declare(queue=self.queue_name)
+        self.channel.queue_declare(queue=self.queue_name, durable=True)
         self.channel.queue_bind(self.queue_name, self.exchange_name,
                                 self.queue_name)
 
@@ -278,9 +278,9 @@ class RpcClient():
         Parameters
         ----------
         ch : Channel
-            Filled in automatically by ``basic_consume``
+            Filled in automatically by ``basic_consume``, unused
         method : pika.spec.Basic.Deliver
-            Filled in automatically by ``basic_consume``
+            Filled in automatically by ``basic_consume``, unused
         props : pika.BasicProperties
             Filled in automatically by ``basic_consume``
         body : bytes
@@ -356,7 +356,7 @@ class RpcClient():
             passed into a custom response handler.
         """
         # declare the recipient queue in case the receiver is dead
-        self.channel.queue_declare(queue=queue)
+        self.channel.queue_declare(queue=queue, durable=True)
 
         self.response = None
         self.corr_id = str(uuid.uuid4())

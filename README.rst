@@ -144,4 +144,4 @@ Exposed Classes
     response handler, defaults to ``{}``; operates like ``**kwargs``
 
 .. aliases below here
-.. _latest: https://github.com/217690thompson/rmqtools/releases/latest
+.. _latest: https://github.com/ASTHROS/rmqtools/releases/latest

@@ -11,7 +11,7 @@ Documentation is available in two forms: docstrings provided with the code,
 and an API reference, available on Read the Docs at ...
 """
 
-__version__ = '1.0.0-alpha.4'
+__version__ = '1.0.0'
 
 import logging
 

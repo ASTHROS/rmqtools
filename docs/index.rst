@@ -58,5 +58,5 @@ Indices and tables
 
 .. aliases below here
 .. _Pika: https://pika.readthedocs.io
-.. _latest: https://github.com/217690thompson/rmqtools/releases/latest
-.. |repo_base| replace:: https://github.com/217690thompson/rmqtools
+.. _latest: https://github.com/ASTHROS/rmqtools/releases/latest
+.. |repo_base| replace:: https://github.com/ASTHROS/rmqtools
