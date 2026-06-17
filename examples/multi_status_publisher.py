@@ -25,7 +25,7 @@ def send_status(device_id):
         print(f"[{now.isoformat()}] Total status messages sent: {total}", "\n")
     return msg
 
-rmq = RmqConnection(host='rabbit-1')
+rmq = RmqConnection(host='rabbit')
 rmq.set_status_exchange('logs')
 
 for i in range(16):

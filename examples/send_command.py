@@ -1,6 +1,6 @@
 from rmqtools import RmqConnection, ResponseObject
 
-rmq = RmqConnection(host='localhost')
+rmq = RmqConnection(host='rabbit')
 rmq.set_command_exchange('test_exg')
 
 @rmq.send_command('start_device', 'device_command')

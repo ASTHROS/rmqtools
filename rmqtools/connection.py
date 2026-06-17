@@ -718,9 +718,7 @@ class Connection():
         try:
             self.exchanges += e
         except ValueError as err:
-            # log that exchange already exists so skipping the creation of it
-            # print(f"Exchange '{name}' already exists on this channel. "
-            #       "Skipping creation, instead verifying the exchange.")
+            # exchange already exists, but that is fine
             pass
 
     def exchange_delete(self, name:str, if_unused=False) -> None:
@@ -757,7 +755,5 @@ class Connection():
         try:
             self.queues += q
         except ValueError as err:
-            # log that queue already exists so skipping the creation of it
-            # print(f"Queue '{name}' already exists on this channel. "
-            #       "Skipping creation, instead verifying the queue.")
+            # this queue already exists, but we can reuse it
             pass

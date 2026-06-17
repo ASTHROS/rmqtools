@@ -379,14 +379,14 @@ class RmqConnection():
         trigger the stop command to shutdown all threads.
         """
         print("Starting all RabbitMQ threads. Press enter at any time to "
-            "shutdown all child threads.")
+              "shutdown all child threads.")
         self.start()
         try:
             input()
             print("Quit command received. Shutting down all child threads...")
         except KeyboardInterrupt as e:
             print("Main thread interrupted by user. Shutting down all child "
-                "threads...")
+                  "threads...")
         self.stop()
 
     def stop(self):

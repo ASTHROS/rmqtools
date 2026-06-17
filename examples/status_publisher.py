@@ -1,7 +1,7 @@
 from rmqtools import RmqConnection
 
 
-rmq = RmqConnection(host='192.168.137.1', port=5672)
+rmq = RmqConnection(host='rabbit')
 rmq.set_status_exchange('status')
 
 def get_status(device_id):
