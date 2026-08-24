@@ -1,6 +1,6 @@
 from rmqtools import RmqConnection, ResponseObject
 
-rmq = RmqConnection(host='rabbit-3')
+rmq = RmqConnection(host='rabbit')
 rmq.set_command_exchange('spec-command')
 
 @rmq.handle_command('device_command')
